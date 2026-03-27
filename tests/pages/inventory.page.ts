@@ -26,4 +26,18 @@ export class InventoryPage {
     await this.page.locator('[data-test="shopping-cart-link"]').click();
     await expect(this.page).toHaveURL(/.*cart.html/);
   }
+
+  async sortByLowToHigh() {
+    await this.page
+      .locator('[data-test="product-sort-container"]')
+      .selectOption("lohi");
+  }
+
+  async assertFirstItemPrice(expectedPrice: string) {
+    const firstItemPrice = await this.page
+      .locator('[data-test="inventory-item-price"]')
+      .first()
+      .innerText();
+    expect(firstItemPrice.trim()).toBe(expectedPrice);
+  }
 }

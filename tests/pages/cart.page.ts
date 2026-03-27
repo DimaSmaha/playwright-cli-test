@@ -13,4 +13,20 @@ export class CartPage {
     await this.page.getByRole("button", { name: "Checkout" }).click();
     await expect(this.page).toHaveURL(/.*checkout-step-one.html/);
   }
+
+  async removeFirstItem() {
+    await this.page.getByRole("button", { name: "Remove" }).first().click();
+  }
+
+  async assertCartBadgeHidden() {
+    await expect(
+      this.page.locator('[data-test="shopping-cart-badge"]'),
+    ).toHaveCount(0);
+  }
+
+  async assertContinueShoppingVisible() {
+    await expect(
+      this.page.getByRole("button", { name: "Continue Shopping" }),
+    ).toBeVisible();
+  }
 }
