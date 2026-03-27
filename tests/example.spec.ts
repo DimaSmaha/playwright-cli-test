@@ -1,27 +1,21 @@
-import { test } from "@playwright/test";
-import { CartPage } from "./pages/cart.page";
-import { CheckoutPage } from "./pages/checkout.page";
-import { InventoryPage } from "./pages/inventory.page";
-import { LoginPage } from "./pages/login.page";
+import { test } from "./fixtures/pages.fixture";
 
-test("user can complete checkout flow on SauceDemo", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
+test("user can complete checkout flow on SauceDemo", async ({ pages }) => {
+  await pages.login.goto();
+  await pages.login.login("standard_user", "secret_sauce");
 
-  await loginPage.goto();
-  await loginPage.login("standard_user", "secret_sauce");
+  await pages.inventory.assertLoaded();
+  await pages.inventory.addFirstItemToCart();
+  await pages.inventory.assertCartCount("1");
+  await pages.inventory.goToCart();
 
-  await inventoryPage.assertLoaded();
-  await inventoryPage.addFirstItemToCart();
-  await inventoryPage.assertCartCount("1");
-  await inventoryPage.goToCart();
+  await pages.cart.assertLoaded();
+  await pages.cart.startCheckout();
 
-  await cartPage.assertLoaded();
-  await cartPage.startCheckout();
+  await pages.checkout.fillInformation("E2E", "Tester", "10001");
+  await pages.checkout.finishOrder();
+  await pages.checkout.assertOrderSuccess();
 
-  await checkoutPage.fillInformation("E2E", "Tester", "10001");
-  await checkoutPage.finishOrder();
-  await checkoutPage.assertOrderSuccess();
+  // Keeps direct browser page access available through the same fixture.
+  await pages.page.screenshot({ path: "order-success.png", fullPage: true });
 });
