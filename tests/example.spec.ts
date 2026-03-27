@@ -1,37 +1,27 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
+import { CartPage } from "./pages/cart.page";
+import { CheckoutPage } from "./pages/checkout.page";
+import { InventoryPage } from "./pages/inventory.page";
+import { LoginPage } from "./pages/login.page";
 
 test("user can complete checkout flow on SauceDemo", async ({ page }) => {
-  await page.goto("https://www.saucedemo.com/");
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+  const cartPage = new CartPage(page);
+  const checkoutPage = new CheckoutPage(page);
 
-  await page.getByPlaceholder("Username").fill("standard_user");
-  await page.getByPlaceholder("Password").fill("secret_sauce");
-  await page.getByRole("button", { name: "Login" }).click();
+  await loginPage.goto();
+  await loginPage.login("standard_user", "secret_sauce");
 
-  await expect(page).toHaveURL(/.*inventory.html/);
-  await expect(page.locator('[data-test="inventory-container"]')).toBeVisible();
+  await inventoryPage.assertLoaded();
+  await inventoryPage.addFirstItemToCart();
+  await inventoryPage.assertCartCount("1");
+  await inventoryPage.goToCart();
 
-  await page.getByRole("button", { name: "Add to cart" }).first().click();
-  await expect(page.locator('[data-test="shopping-cart-badge"]')).toHaveText(
-    "1",
-  );
+  await cartPage.assertLoaded();
+  await cartPage.startCheckout();
 
-  await page.locator('[data-test="shopping-cart-link"]').click();
-  await expect(page).toHaveURL(/.*cart.html/);
-  await expect(page.getByRole("button", { name: "Checkout" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Checkout" }).click();
-  await expect(page).toHaveURL(/.*checkout-step-one.html/);
-
-  await page.getByPlaceholder("First Name").fill("E2E");
-  await page.getByPlaceholder("Last Name").fill("Tester");
-  await page.getByPlaceholder("Zip/Postal Code").fill("10001");
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page).toHaveURL(/.*checkout-step-two.html/);
-  await page.getByRole("button", { name: "Finish" }).click();
-
-  await expect(page).toHaveURL(/.*checkout-complete.html/);
-  await expect(
-    page.getByRole("heading", { name: "Thank you for your order!" }),
-  ).toBeVisible();
+  await checkoutPage.fillInformation("E2E", "Tester", "10001");
+  await checkoutPage.finishOrder();
+  await checkoutPage.assertOrderSuccess();
 });
