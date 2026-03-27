@@ -1,6 +1,6 @@
 # Playwright CLI Test
 
-All generated with playwright-cli.
+All generated with GitHub Copilot, playwright-cli and playwright-best-practices Skills.
 
 ## Installation
 
