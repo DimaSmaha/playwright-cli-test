@@ -1,0 +1,41 @@
+# Playwright CLI Test
+
+All generated with playwright-cli.
+
+## Installation
+
+Install Playwright CLI globally:
+
+```bash
+npm install -g @playwright/cli@latest
+```
+
+Check available commands:
+
+```bash
+playwright-cli --help
+```
+
+## Installing skills
+
+Claude Code, GitHub Copilot and others will use the locally installed skills.
+
+```bash
+playwright-cli install --skills
+```
+
+## Skills-less operation
+
+Point your agent at the CLI and let it cook. It will read the skill from `playwright-cli --help` on its own.
+
+Example prompt:
+
+Test the "add todo" flow on https://demo.playwright.dev/todomvc using playwright-cli.
+Check playwright-cli --help for available commands.
+
+## My chat history
+
+- Using the playwright cli. Open the website https://www.saucedemo.com/, login inside and define e2e test.
+- can you do it headed
+- can you please login, and define the e2e scenario for the user flow for this website, and do all of this headed
+- can you make a screenshot of the success order verification
