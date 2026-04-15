@@ -36,6 +36,21 @@ function cleanName(name: string) {
   return name.replace(/@\w+/g, "").trim();
 }
 
+// 🔥 smarter matching instead of exact key lookup
+function findKnownIssue(testName: string) {
+  const normalizedTest = testName.toLowerCase().trim();
+
+  for (const issueName in KNOWN_ISSUES) {
+    const normalizedIssue = issueName.toLowerCase().trim();
+
+    if (normalizedTest.includes(normalizedIssue)) {
+      return KNOWN_ISSUES[issueName];
+    }
+  }
+
+  return null;
+}
+
 function extractMinimalError(failureText: string) {
   if (!failureText) return "";
 
@@ -153,6 +168,7 @@ function buildHTML(suites: any[]) {
       .passed { border-left: 6px solid #2ecc71; }
       .failed { border-left: 6px solid #e74c3c; }
       .skipped { border-left: 6px solid #f1c40f; }
+      .known-issue { border-left: 6px solid #ff9800 !important; }
 
       .title {
         font-weight: bold;
@@ -206,10 +222,11 @@ function buildHTML(suites: any[]) {
     <div class="container">
       ${normalized
         .map((tc) => {
-          const issue = KNOWN_ISSUES[tc.cleanName];
+          const issue = findKnownIssue(tc.cleanName);
+          const issueClass = issue ? "known-issue" : "";
 
           return `
-          <div class="card ${tc.status}">
+          <div class="card ${tc.status} ${issueClass}">
             <div class="title">${tc.name}</div>
             <div>Status: ${tc.status.toUpperCase()}</div>
             <div>Time: ${tc.duration}s</div>
@@ -221,7 +238,7 @@ function buildHTML(suites: any[]) {
             ${
               issue
                 ? `<a class="issue-btn" href="${ISSUE_URL(issue)}" target="_blank">
-                     View Known Issue (${issue})
+                     BUG: ${issue}
                    </a>`
                 : ""
             }
@@ -250,7 +267,6 @@ async function generatePDF(html: string) {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  // 🚀 No filesystem — direct HTML render
   await page.setContent(html, { waitUntil: "load" });
 
   await page.pdf({
