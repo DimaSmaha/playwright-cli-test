@@ -19,9 +19,19 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+    - name: Generate PDF report
+      if: ${{ !cancelled() }}
+      run: npm run generate:pdf
+    - name: Upload PDF report
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: pdf-report
+        path: pdf-reports/
+        retention-days: 7
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
+        retention-days: 7
