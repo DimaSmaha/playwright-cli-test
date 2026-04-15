@@ -8,4 +8,5 @@ node_modules/
 /playwright/.auth/
 junitreports
 pdf-reports
-*.png
+.playwright-cli/
+order-success.png
