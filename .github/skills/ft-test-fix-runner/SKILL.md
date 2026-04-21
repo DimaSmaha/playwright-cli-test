@@ -1,5 +1,5 @@
 ---
-name: ft-fix-runner
+name: ft-test-fix-runner
 description: >
   Automated test-side fix execution for Pipeline B after ft-classifier identifies
   a high-confidence test-bug. Use when classification.json recommends test repair
@@ -8,7 +8,7 @@ description: >
   classification".
 ---
 
-# ft-fix-runner
+# ft-test-fix-runner
 
 This skill applies targeted test-only fixes for a classified `test-bug` and
 ships them through a safe branch-to-PR workflow.

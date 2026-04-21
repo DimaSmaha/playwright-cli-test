@@ -43,7 +43,7 @@ This skill consumes `repro.json`, scores evidence signals, and emits a stable
   "signals": [{ "name": "...", "weight": 0.0 }],
   "error_summary": "...",
   "evidence_paths": ["trace.zip", "fail.png"],
-  "recommended_next_skill": "ft-fix-runner|ft-bug-reporter|none"
+  "recommended_next_skill": "ft-test-fix-runner|ft-bug-reporter|none"
 }
 ```
 
@@ -56,7 +56,7 @@ This skill consumes `repro.json`, scores evidence signals, and emits a stable
 
 ## Routing
 
-- `test-bug` with threshold met → `ft-fix-runner`
+- `test-bug` with threshold met → `ft-test-fix-runner`
 - `app-bug` with threshold met → `ft-bug-reporter`
 - `flaky` → mark flaky + retry policy
 - `infra` or low confidence → stop/escalate
